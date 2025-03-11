@@ -1,0 +1,369 @@
+########################
+logging outputs to  /Users/chengzhilin/Library/Mobile Documents/com~apple~CloudDocs/300-学习/399-强化学习/CS 285/homework_fall2023/hw1/cs285/scripts/../../data/q2_bc_Hopper-v4_Hopper-v4_25-02-2025_17-36-26
+########################
+GPU not detected. Defaulting to CPU.
+ep_len 1000
+ob_dim and ac_dim 11 3
+Loading expert policy from... cs285/policies/experts/Hopper.pkl
+obs (1, 11) (1, 11)
+Done restoring expert policy...
+
+
+********** Iteration 0 ************
+
+Collecting data to be used for training...
+
+Training agent using sampled data from replay buffer...
+
+Beginning logging procedure...
+
+Collecting data for eval...
+Eval_AverageReturn : 1244.3389892578125
+Eval_StdReturn : 104.89309692382812
+Eval_MaxReturn : 1401.884765625
+Eval_MinReturn : 986.7306518554688
+Eval_AverageEpLen : 353.46666666666664
+Train_AverageReturn : 3717.5129936182307
+Train_StdReturn : 0.3530361779417035
+Train_MaxReturn : 3717.8660297961724
+Train_MinReturn : 3717.159957440289
+Train_AverageEpLen : 1000.0
+Training Loss : -11.008672714233398
+Train_EnvstepsSoFar : 0
+TimeSinceStart : 0.7276759147644043
+Initial_DataCollection_AverageReturn : 3717.5129936182307
+Done logging...
+
+
+
+
+********** Iteration 1 ************
+
+Collecting data to be used for training...
+
+Relabelling collected observations with labels from an expert policy...
+(345, 11)
+(370, 11)
+(348, 11)
+(337, 11)
+(374, 11)
+(360, 11)
+(344, 11)
+(376, 11)
+(345, 11)
+(336, 11)
+(349, 11)
+(337, 11)
+(342, 11)
+(353, 11)
+(350, 11)
+
+Training agent using sampled data from replay buffer...
+
+Beginning logging procedure...
+
+Collecting data for eval...
+Eval_AverageReturn : 939.30908203125
+Eval_StdReturn : 135.24041748046875
+Eval_MaxReturn : 1036.37939453125
+Eval_MinReturn : 693.9581909179688
+Eval_AverageEpLen : 298.6470588235294
+Train_AverageReturn : 1250.468017578125
+Train_StdReturn : 42.19436264038086
+Train_MaxReturn : 1331.0234375
+Train_MinReturn : 1199.87353515625
+Train_AverageEpLen : 351.06666666666666
+Training Loss : -12.506428718566895
+Train_EnvstepsSoFar : 5266
+TimeSinceStart : 2.2278897762298584
+Done logging...
+
+
+
+
+********** Iteration 2 ************
+
+Collecting data to be used for training...
+
+Relabelling collected observations with labels from an expert policy...
+(233, 11)
+(318, 11)
+(318, 11)
+(229, 11)
+(320, 11)
+(319, 11)
+(228, 11)
+(230, 11)
+(319, 11)
+(320, 11)
+(320, 11)
+(319, 11)
+(317, 11)
+(318, 11)
+(234, 11)
+(319, 11)
+(234, 11)
+(322, 11)
+
+Training agent using sampled data from replay buffer...
+
+Beginning logging procedure...
+
+Collecting data for eval...
+Eval_AverageReturn : 2690.88818359375
+Eval_StdReturn : 630.0452880859375
+Eval_MaxReturn : 3747.6083984375
+Eval_MinReturn : 1915.646240234375
+Eval_AverageEpLen : 745.1428571428571
+Train_AverageReturn : 910.3706665039062
+Train_StdReturn : 157.8084716796875
+Train_MaxReturn : 1036.588623046875
+Train_MinReturn : 673.166748046875
+Train_AverageEpLen : 289.8333333333333
+Training Loss : -13.936018943786621
+Train_EnvstepsSoFar : 10483
+TimeSinceStart : 3.6607489585876465
+Done logging...
+
+
+
+
+********** Iteration 3 ************
+
+Collecting data to be used for training...
+
+Relabelling collected observations with labels from an expert policy...
+(713, 11)
+(1000, 11)
+(904, 11)
+(658, 11)
+(427, 11)
+(1000, 11)
+(521, 11)
+
+Training agent using sampled data from replay buffer...
+
+Beginning logging procedure...
+
+Collecting data for eval...
+Eval_AverageReturn : 3613.490966796875
+Eval_StdReturn : 36.621402740478516
+Eval_MaxReturn : 3661.775390625
+Eval_MinReturn : 3568.1875
+Eval_AverageEpLen : 1000.0
+Train_AverageReturn : 2648.05029296875
+Train_StdReturn : 745.1466674804688
+Train_MaxReturn : 3750.3046875
+Train_MinReturn : 1512.51513671875
+Train_AverageEpLen : 746.1428571428571
+Training Loss : -10.777060508728027
+Train_EnvstepsSoFar : 15706
+TimeSinceStart : 5.143618822097778
+Done logging...
+
+
+
+
+********** Iteration 4 ************
+
+Collecting data to be used for training...
+
+Relabelling collected observations with labels from an expert policy...
+(1000, 11)
+(1000, 11)
+(1000, 11)
+(1000, 11)
+(1000, 11)
+
+Training agent using sampled data from replay buffer...
+
+Beginning logging procedure...
+
+Collecting data for eval...
+Eval_AverageReturn : 3214.483154296875
+Eval_StdReturn : 639.6461791992188
+Eval_MaxReturn : 3702.3857421875
+Eval_MinReturn : 2283.820068359375
+Eval_AverageEpLen : 865.0
+Train_AverageReturn : 3666.634765625
+Train_StdReturn : 8.598179817199707
+Train_MaxReturn : 3677.681396484375
+Train_MinReturn : 3651.2333984375
+Train_AverageEpLen : 1000.0
+Training Loss : -12.670296669006348
+Train_EnvstepsSoFar : 20706
+TimeSinceStart : 6.509944915771484
+Done logging...
+
+
+
+
+********** Iteration 5 ************
+
+Collecting data to be used for training...
+
+Relabelling collected observations with labels from an expert policy...
+(1000, 11)
+(1000, 11)
+(951, 11)
+(1000, 11)
+(588, 11)
+(1000, 11)
+
+Training agent using sampled data from replay buffer...
+
+Beginning logging procedure...
+
+Collecting data for eval...
+Eval_AverageReturn : 3733.825439453125
+Eval_StdReturn : 1.6453567743301392
+Eval_MaxReturn : 3735.96337890625
+Eval_MinReturn : 3731.478515625
+Eval_AverageEpLen : 1000.0
+Train_AverageReturn : 3429.8544921875
+Train_StdReturn : 540.8193359375
+Train_MaxReturn : 3701.580322265625
+Train_MinReturn : 2222.560546875
+Train_AverageEpLen : 923.1666666666666
+Training Loss : -13.15872573852539
+Train_EnvstepsSoFar : 26245
+TimeSinceStart : 8.042576789855957
+Done logging...
+
+
+
+
+********** Iteration 6 ************
+
+Collecting data to be used for training...
+
+Relabelling collected observations with labels from an expert policy...
+(1000, 11)
+(1000, 11)
+(1000, 11)
+(1000, 11)
+(1000, 11)
+
+Training agent using sampled data from replay buffer...
+
+Beginning logging procedure...
+
+Collecting data for eval...
+Eval_AverageReturn : 3713.9609375
+Eval_StdReturn : 1.3432663679122925
+Eval_MaxReturn : 3716.1904296875
+Eval_MinReturn : 3712.5244140625
+Eval_AverageEpLen : 1000.0
+Train_AverageReturn : 3730.33837890625
+Train_StdReturn : 1.1924035549163818
+Train_MaxReturn : 3732.22021484375
+Train_MinReturn : 3728.951416015625
+Train_AverageEpLen : 1000.0
+Training Loss : -14.065370559692383
+Train_EnvstepsSoFar : 31245
+TimeSinceStart : 9.456300973892212
+Done logging...
+
+
+
+
+********** Iteration 7 ************
+
+Collecting data to be used for training...
+
+Relabelling collected observations with labels from an expert policy...
+(1000, 11)
+(1000, 11)
+(1000, 11)
+(1000, 11)
+(1000, 11)
+
+Training agent using sampled data from replay buffer...
+
+Beginning logging procedure...
+
+Collecting data for eval...
+Eval_AverageReturn : 3705.22509765625
+Eval_StdReturn : 2.318794012069702
+Eval_MaxReturn : 3708.4697265625
+Eval_MinReturn : 3701.8681640625
+Eval_AverageEpLen : 1000.0
+Train_AverageReturn : 3712.430419921875
+Train_StdReturn : 2.7103371620178223
+Train_MaxReturn : 3716.53955078125
+Train_MinReturn : 3708.2578125
+Train_AverageEpLen : 1000.0
+Training Loss : -14.404529571533203
+Train_EnvstepsSoFar : 36245
+TimeSinceStart : 10.896014928817749
+Done logging...
+
+
+
+
+********** Iteration 8 ************
+
+Collecting data to be used for training...
+
+Relabelling collected observations with labels from an expert policy...
+(1000, 11)
+(1000, 11)
+(1000, 11)
+(1000, 11)
+(1000, 11)
+
+Training agent using sampled data from replay buffer...
+
+Beginning logging procedure...
+
+Collecting data for eval...
+Eval_AverageReturn : 3717.754638671875
+Eval_StdReturn : 4.275097846984863
+Eval_MaxReturn : 3722.61376953125
+Eval_MinReturn : 3710.23291015625
+Eval_AverageEpLen : 1000.0
+Train_AverageReturn : 3704.200439453125
+Train_StdReturn : 5.347785472869873
+Train_MaxReturn : 3713.20361328125
+Train_MinReturn : 3698.464599609375
+Train_AverageEpLen : 1000.0
+Training Loss : -13.321534156799316
+Train_EnvstepsSoFar : 41245
+TimeSinceStart : 12.431305885314941
+Done logging...
+
+
+
+
+********** Iteration 9 ************
+
+Collecting data to be used for training...
+
+Relabelling collected observations with labels from an expert policy...
+(1000, 11)
+(1000, 11)
+(1000, 11)
+(1000, 11)
+(1000, 11)
+
+Training agent using sampled data from replay buffer...
+
+Beginning logging procedure...
+
+Collecting data for eval...
+Eval_AverageReturn : 3718.852783203125
+Eval_StdReturn : 1.4004721641540527
+Eval_MaxReturn : 3721.48095703125
+Eval_MinReturn : 3717.640625
+Eval_AverageEpLen : 1000.0
+Train_AverageReturn : 3717.792236328125
+Train_StdReturn : 2.3531911373138428
+Train_MaxReturn : 3720.698486328125
+Train_MinReturn : 3714.60302734375
+Train_AverageEpLen : 1000.0
+Training Loss : -14.792204856872559
+Train_EnvstepsSoFar : 46245
+TimeSinceStart : 14.054924964904785
+Done logging...
+
+
