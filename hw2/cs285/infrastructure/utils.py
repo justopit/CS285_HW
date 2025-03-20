@@ -29,15 +29,15 @@ def sample_trajectory(
                 cv2.resize(img, dsize=(250, 250), interpolation=cv2.INTER_CUBIC)
             )
 
-        # TODO use the most recent ob and the policy to decide what to do
-        ac: np.ndarray = None
 
-        # TODO: use that action to take a step in the environment
-        next_ob, rew, done, _ = None, None, None, None
-
-        # TODO rollout can end due to done, or due to max_length
+        # TODO use the most recent ob to decide what to do
+        ac = policy.get_action(ob) # HINT: this is a numpy array
+        # TODO: take that action and get reward and next ob
+        next_ob, rew, done, _ = env.step(ac)
+        # print('rnew', rew)
+        # TODO rollout can end due to done, or due to max_path_length
         steps += 1
-        rollout_done: bool = None
+        rollout_done = done or steps >= max_length# HINT: this is either 0 or 1
 
         # record result of taking that action
         obs.append(ob)

@@ -6,7 +6,7 @@ from torch import optim
 import numpy as np
 import torch
 from torch import distributions
-
+from torch.distributions import Normal, Categorical, MultivariateNormal
 from cs285.infrastructure import pytorch_util as ptu
 
 
@@ -59,7 +59,8 @@ class MLPPolicy(nn.Module):
     def get_action(self, obs: np.ndarray) -> np.ndarray:
         """Takes a single observation (as a numpy array) and returns a single action (as a numpy array)."""
         # TODO: implement get_action
-        action = None
+        action_dist =self(ptu.from_numpy(obs))
+        action = ptu.to_numpy(action_dist.sample())
 
         return action
 
@@ -70,13 +71,14 @@ class MLPPolicy(nn.Module):
         flexible objects, such as a `torch.distributions.Distribution` object. It's up to you!
         """
         if self.discrete:
-            # TODO: define the forward pass for a policy with a discrete action space.
-            pass
+            logits = self.logits_net(obs)
+            dist = Categorical(logits=logits)  # 创建离散分布
         else:
-            # TODO: define the forward pass for a policy with a continuous action space.
-            pass
-        return None
+            mean, std = self.mean_net(obs), torch.exp(self.logstd)
+            dist = MultivariateNormal(mean, torch.diag(std))
 
+        return dist
+    
     def update(self, obs: np.ndarray, actions: np.ndarray, *args, **kwargs) -> dict:
         """Performs one iteration of gradient descent on the provided batch of data."""
         raise NotImplementedError
@@ -95,9 +97,14 @@ class MLPPolicyPG(MLPPolicy):
         obs = ptu.from_numpy(obs)
         actions = ptu.from_numpy(actions)
         advantages = ptu.from_numpy(advantages)
+        self.optimizer.zero_grad()
 
-        # TODO: implement the policy gradient actor update.
-        loss = None
+        log_pi = self(obs).log_prob(actions)
+        loss = torch.neg(torch.mean(torch.mul(log_pi, advantages)))
+
+        
+        loss.backward()
+        self.optimizer.step()
 
         return {
             "Actor Loss": ptu.to_numpy(loss),
