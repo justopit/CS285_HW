@@ -65,7 +65,7 @@ def run_training_loop(args):
 
     total_envsteps = 0
     start_time = time.time()
-
+    print("Dynl", args.use_dynl)
     for itr in range(args.n_iter):
         print(f"\n********** Iteration {itr} ************")
         # TODO: sample `args.batch_size` transitions using utils.sample_trajectories
@@ -82,7 +82,19 @@ def run_training_loop(args):
         # print('Reward??', trajs_dict['reward'])
         train_info: dict = {"obs":trajs_dict['observation'], "actions": trajs_dict['action'], 
                             'rewards':trajs_dict['reward'], "terminals":trajs_dict['terminal']}
+        if args.use_dynl and itr % 10 == 0 and itr >= 40:
+            print("\n Use Smaller LR")
+            for param_group in agent.actor.optimizer.param_groups:
+                param_group['lr'] = max(args.learning_rate * 0.1, 1e-6)
+            try:
+                for param_group in agent.critic.optimizer.param_groups:
+                    param_group['lr'] = max(args.baseline_learning_rate * 0.1, 1e-6)
+
+            except:
+                print('pass')
+                pass
         train_info = agent.update(**train_info)
+        
         if itr % args.scalar_log_freq == 0:
             # save eval metrics
             print("\nCollecting data for eval...")
@@ -154,10 +166,11 @@ def main():
     )  # students shouldn't change this away from env's default
     parser.add_argument("--seed", type=int, default=1)
     parser.add_argument("--no_gpu", "-ngpu", action="store_true")
+    parser.add_argument("--use_dynl", "-udl", action="store_true")
     parser.add_argument("--which_gpu", "-gpu_id", default=0)
     parser.add_argument("--video_log_freq", type=int, default=-1)
     parser.add_argument("--scalar_log_freq", type=int, default=1)
-
+    
     parser.add_argument("--action_noise_std", type=float, default=0)
 
     args = parser.parse_args()

@@ -1,4 +1,5 @@
 # No baseline
+# No baseline
 python cs285/scripts/run_hw2.py --env_name HalfCheetah-v4 \
 -n 200 -b 5000 -rtg --discount 0.95 -lr 0.01 \
 --exp_name cheetah
