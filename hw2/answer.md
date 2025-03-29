@@ -115,10 +115,101 @@ $$
 ![alt text](image-15.png)
 ![alt text](image-16.png)
 
-(b) 求解先直接求reward，再求关于$\theta$的梯度。
-很明显，reward为
+    (b) 求解先直接求reward，再求关于$\theta$的梯度。
+    很明显，reward为
+    $$
+    J(\theta) = \theta \times 1 + (1-\theta) \times 0 + \theta \times (\theta \times 1 + (1-\theta) \times 0) + \theta^2 \times (\theta \times 1 + (1-\theta) \times 0) ... = \sum_{k=1}\theta^k =\frac \theta {1-\theta}
+    $$
+    表示了用户在第一个时刻的平均reward + 第二个时刻的平均reward + ...。其导数为$\frac 1 {(1-\theta)^2}$
+    其策略梯度和(a)解法一致。
+    还有一种利用迭代思路求$J(\theta)$, 就是
+    $$
+    J(\theta) = (1-\theta) \times 0 + \theta \times (J(\theta) + 1)=> J(\theta) = \frac \theta {1-\theta}
+    $$
+
+2. 计算policy gradient的方差。
+policy gradient为
 $$
-J(\theta) = \theta \times 1 + (1-\theta) \times 0 + \theta \times (\theta \times 1 + (1-\theta) \times 0) + \theta^2 \times (\theta \times 1 + (1-\theta) \times 0) ... = \sum_{k=1}\theta^k =\frac \theta {1-\theta}
+\mathbb E[g^2] - \mathbb E[g]^2
 $$
-表示了用户在第一个时刻的平均reward + 第二个时刻的平均reward + ...。其导数为$\frac 1 {(1-\theta)^2}$
-其策略梯度和(a)解法一致。
+其中$E[g]^2$是已经知道的。求
+$$
+E[g^2] = \sum_{k=1}^{\infty} p(k)(k \times (\frac k \theta - \frac 1 {1-\theta}))^2 \\
+$$
+这里面要用到
+$$
+\sum_{k=1}^\infty k^3 \theta^{k-1}
+= \frac{1}{\theta} \cdot \frac{\theta(\theta^2 + 4\theta + 1)}{(1 - \theta)^4}
+= \frac{\theta^2 + 4\theta + 1}{(1 - \theta)^4} \\
+\sum_{k=1}^\infty k^4 \theta^{k-1}
+= \frac{1}{\theta} \cdot \frac{\theta(\theta^3 + 11\theta^2 + 11\theta + 1)}{(1 - \theta)^5}
+= \frac{\theta^3 + 11\theta^2 + 11\theta + 1}{(1 - \theta)^5}
+$$
+使用以下python代数计算方程
+```python
+from sympy import *
+x = Symbol('x', real=True)
+k = Symbol('k', real=True)
+one = 1 / (1-x) ** 2
+two = (x + 1) / ((1-x)**3)
+three = (x ** 2 + 4 * x + 1) / ((1-x) ** 4)
+four = (x ** 3 + 11 * x ** 2 + 11 * x + 1 ) / ((1-x) ** 5)
+print(one, two, three, four)
+
+pg = four * (1-x) / x - 2 *  three  + two * x / (1-x) - 1 / (1-x) ** 4
+pg_ans = cancel(pg)
+print('pg_ans', simplify(pg_ans))
+```
+得到最后的方差为
+$$
+\frac {4\theta^2 + 8\theta + 1 } {\theta(1-\theta)^4}
+$$
+在$\theta=0,1$其方差最大为无穷。
+在$\theta=0.1099$时方差最小，约为 27.9411。
+
+3. return-to-go计算均值和方差
+
+    当使用return-to-go的reward的时候，对每一个轨迹$\tau_k$, 其状态$s_{j}, j=0...k$下使用动作$a$后，其reward为$k-j$。因此其估计的梯度为
+    $$
+    \sum_{k=1}^{\infty}\theta^k(1-\theta)\frac 1 \theta (k+k-1+k-2...+0) =\sum_{k=1}^{\infty} \theta^{k-1}(1-\theta)\frac {k^2 +k}{2} \\
+    =\frac 1 {(1-\theta)^2}
+    $$
+    其方差为
+    $$
+    \sum_{k=1}^{\infty} \theta^{k-1}((1-\theta)\frac {k^2 +k}{2})^2 - \frac 1 {(1-\theta)^4} \\
+    = \frac {\theta ^ 2 + 3 \theta + 1} {\theta(1-\theta)^4}
+    $$
+    代码为
+    ```python
+    from sympy import *
+    x = Symbol('x', real=True)
+    k = Symbol('k', real=True)
+    one = 1 / (1-x) ** 2
+    two = (x + 1) / ((1-x)**3)
+    three = (x ** 2 + 4 * x + 1) / ((1-x) ** 4)
+    four = (x ** 3 + 11 * x ** 2 + 11 * x + 1 ) / ((1-x) ** 5)
+    print(one, two, three, four)
+
+    ans = (1-x) / (4 * x) * (four + 2 * three + two) - 1 / (1-x) ** 4
+    print('ori ans', simplify(ans))
+    ans = cancel(ans)
+    print(simplify(ans))
+    ```    
+    观察reward-to-go reward和total reward梯度方差和theta的关系，可以看到使用reward-to-go其方差会大幅度减小
+    ![alt text](image-17.png)
+    ![alt text](image-18.png)
+
+4. 计算importance sampling的梯度均值和方差
+
+    首先很明显，只用agent到达$S_H$的时候才能获得奖励，其概率为$\theta'^{H-1}$。因此在Importance Sampling下，其梯度均值为
+    $$
+    \theta'^{H-1} \times \frac { \theta^{H-1}} { \theta'^{H-1}} \frac {H-1} {\theta} = \theta^{H-1}  \frac {H-1} {\theta}
+    $$
+    接下来，计算方差为
+    $$
+    \theta'^{H-1}  (\frac { \theta^{H-1}} { \theta'^{H-1}} \frac {H-1} {\theta})^2 - (\theta^{H-1}  \frac {H-1} {\theta}) ^ 2 \\= {(\frac {\theta^2} {\theta'})}^{H-1} (H-1)^2\frac {1- \theta^{(H-1)}} {\theta^2}
+    $$
+    可以看到当$H$无穷的时候,主导方程变化的是${(\frac {\theta^2} {\theta'})}^{H-1}$.
+    当$\theta^2 < \theta'$,H无穷，方差趋向0。
+    当$\theta^2 >= \theta'$,H无穷，方差趋向无穷。
+    可是我们知道$\theta$越大，效果越好。这意味着当我们优化$\theta = \sqrt \theta'$的时候，我们的模型就会卡住，无法继续训练。这体现了importance sampling的缺点，使用off policy无法到达最优点，由于梯度方差的无穷。
