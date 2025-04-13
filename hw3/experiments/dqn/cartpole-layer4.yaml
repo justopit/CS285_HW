@@ -2,5 +2,5 @@ base_config: dqn_basic
 env_name: CartPole-v1
 learning_rate: 0.001
 target_update_period: 1000
-num_layers: 2
-total_steps: 1000000
+use_double_q: true
+num_layers: 4

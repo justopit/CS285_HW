@@ -102,7 +102,8 @@ def run_training_loop(config: dict, logger: Logger, args: argparse.Namespace):
         if isinstance(replay_buffer, MemoryEfficientReplayBuffer):
             # We're using the memory-efficient replay buffer,
             # so we only insert next_observation (not observation)
-            replay_buffer.insert(action=action, reward=reward, next_observation=next_observation, done=done and not truncated)
+            # print('next_observation', next_observation.shape)
+            replay_buffer.insert(action=action, reward=reward, next_observation=next_observation[3], done=done and not truncated)
         else:
             # We're using the regular replay buffer
             replay_buffer.insert(observation, action, reward, next_observation, done and not truncated)
@@ -131,6 +132,12 @@ def run_training_loop(config: dict, logger: Logger, args: argparse.Namespace):
             update_info["epsilon"] = epsilon
             update_info["lr"] = agent.lr_scheduler.get_last_lr()[0]
 
+            if step % 300000 == 0:
+                print("\n Use Smaller LR")
+                for param_group in agent.critic_optimizer.param_groups:
+                    param_group['lr'] = max(param_group['lr'] * 0.1, 1e-6)
+            
+            
             if step % args.log_interval == 0:
                 for k, v in update_info.items():
                     logger.log_scalar(v, k, step)
