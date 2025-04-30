@@ -129,3 +129,6 @@ dmypy.json
 .pyre/
 
 hw1/data/*
+hw2/data/*
+hw3/data/*
+hw4/data/*

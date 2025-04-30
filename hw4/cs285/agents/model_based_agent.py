@@ -89,7 +89,12 @@ class ModelBasedAgent(nn.Module):
         # directly
         # HINT 3: make sure to avoid any risk of dividing by zero when
         # normalizing vectors by adding a small number to the denominator!
-        loss = ...
+        obs_acs = torch.cat((obs, acs), axis=-1)
+        delta_obs = next_obs - obs 
+        norm_inputs = (obs_acs - self.obs_acs_mean[None,:]) / (self.obs_acs_std[None,:] + 1e-9)
+        norm_goal = (delta_obs - self.obs_delta_mean[None,:] ) / (self.obs_delta_std[None,:] + 1e-9)
+        pred = self.dynamics_models[i](norm_inputs)
+        loss = self.loss_fn(pred, norm_goal)
 
         self.optimizer.zero_grad()
         loss.backward()
@@ -111,10 +116,12 @@ class ModelBasedAgent(nn.Module):
         acs = ptu.from_numpy(acs)
         next_obs = ptu.from_numpy(next_obs)
         # TODO(student): update the statistics
-        self.obs_acs_mean = ...
-        self.obs_acs_std = ...
-        self.obs_delta_mean = ...
-        self.obs_delta_std = ...
+        obs_acs = torch.cat((obs, acs), axis=-1)
+        obs_delta = next_obs - obs
+        self.obs_acs_mean = obs_acs.mean(axis=0)
+        self.obs_acs_std = obs_acs.std(axis=0)
+        self.obs_delta_mean = obs_delta.mean(axis=0)
+        self.obs_delta_std = obs_delta.std(axis=0)
 
     @torch.no_grad()
     def get_dynamics_predictions(
@@ -135,6 +142,10 @@ class ModelBasedAgent(nn.Module):
         # HINT: make sure to *unnormalize* the NN outputs (observation deltas)
         # Same hints as `update` above, avoid nasty divide-by-zero errors when
         # normalizing inputs!
+        obs_acs = torch.cat((obs, acs), axis=-1)
+        norm_inputs = (obs_acs - self.obs_acs_mean[None,:]) / (self.obs_acs_std[None,:] + 1e-9)
+        pred = self.dynamics_models[i](norm_inputs)
+        pred_next_obs = pred * (self.obs_delta_std[None,:] + 1e-9) + self.obs_delta_mean[None,:] + obs
         return ptu.to_numpy(pred_next_obs)
 
     def evaluate_action_sequences(self, obs: np.ndarray, action_sequences: np.ndarray):
@@ -160,7 +171,7 @@ class ModelBasedAgent(nn.Module):
         obs = np.tile(obs, (self.ensemble_size, self.mpc_num_action_sequences, 1))
 
         # TODO(student): for each batch of actions in in the horizon...
-        for acs in ...:
+        for acs in np.moveaxis(action_sequences, 1, 0):
             assert acs.shape == (self.mpc_num_action_sequences, self.ac_dim)
             assert obs.shape == (
                 self.ensemble_size,
@@ -170,7 +181,7 @@ class ModelBasedAgent(nn.Module):
 
             # TODO(student): predict the next_obs for each rollout
             # HINT: use self.get_dynamics_predictions
-            next_obs = ...
+            next_obs = np.stack([self.get_dynamics_predictions(i, obs[i], acs) for i in range(self.ensemble_size)], axis=0)
             assert next_obs.shape == (
                 self.ensemble_size,
                 self.mpc_num_action_sequences,
@@ -183,7 +194,9 @@ class ModelBasedAgent(nn.Module):
             # respectively, and returns a tuple of `(rewards, dones)`. You can 
             # ignore `dones`. You might want to do some reshaping to make
             # `next_obs` and `acs` 2-dimensional.
-            rewards = ...
+            acs_aligned = np.tile(acs, (self.ensemble_size, 1, 1))  # 直接复制到目标形状
+            rewards, dones = self.env.get_reward(next_obs.reshape(self.ensemble_size * self.mpc_num_action_sequences, -1), acs_aligned .reshape(self.ensemble_size * self.mpc_num_action_sequences, -1))
+            rewards = rewards.reshape(self.ensemble_size, self.mpc_num_action_sequences)
             assert rewards.shape == (self.ensemble_size, self.mpc_num_action_sequences)
 
             sum_of_rewards += rewards
@@ -216,6 +229,7 @@ class ModelBasedAgent(nn.Module):
         elif self.mpc_strategy == "cem":
             elite_mean, elite_std = None, None
             for i in range(self.cem_num_iters):
+                pass
                 # TODO(student): implement the CEM algorithm
                 # HINT: you need a special case for i == 0 to initialize
                 # the elite mean and std

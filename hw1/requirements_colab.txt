@@ -1,4 +1,4 @@
-mujoco==2.2.0
+Zmujoco==2.2.0
 gym==0.25.2
 tensorboardX==2.5.1
 moviepy==1.0.3

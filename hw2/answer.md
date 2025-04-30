@@ -1,3 +1,4 @@
+# CS 285 HW2
 # Experiemnt 1(CartPole)
 + 小BatchSize下(average return vs. number of environment steps)的对比
 ![alt text](image.png)
