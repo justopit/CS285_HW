@@ -229,9 +229,23 @@ class ModelBasedAgent(nn.Module):
         elif self.mpc_strategy == "cem":
             elite_mean, elite_std = None, None
             for i in range(self.cem_num_iters):
-                pass
-                # TODO(student): implement the CEM algorithm
-                # HINT: you need a special case for i == 0 to initialize
-                # the elite mean and std
+                if i == 0:
+                    rewards = self.evaluate_action_sequences(obs, action_sequences)
+                    assert rewards.shape == (self.mpc_num_action_sequences,)
+                    elite_idxs = np.argsort(rewards)[-self.cem_num_elites:]
+                    elite_mean, elite_std = action_sequences[elite_idxs].mean(axis=0), action_sequences[elite_idxs].std(axis=0)
+                else:
+                    action_sequences = np.random.normal(
+                        elite_mean.reshape(1, self.mpc_horizon, self.ac_dim),
+                        elite_std.reshape(1, self.mpc_horizon, self.ac_dim),
+                        size=(self.mpc_num_action_sequences, self.mpc_horizon, self.ac_dim)
+                    )   
+                    rewards = self.evaluate_action_sequences(obs, action_sequences)
+                    assert rewards.shape == (self.mpc_num_action_sequences,)
+                    elite_idxs = np.argsort(rewards)[-self.cem_num_elites:]
+                    elite_mean, elite_std = (1.0 - self.cem_alpha) * elite_mean + self.cem_alpha * action_sequences[elite_idxs].mean(axis=0), (1.0 - self.cem_alpha) *  elite_std + self.cem_alpha * action_sequences[elite_idxs].std(axis=0)
+
+            
+            return elite_mean[0]
         else:
             raise ValueError(f"Invalid MPC strategy '{self.mpc_strategy}'")
